@@ -447,16 +447,18 @@ header {
 
 /* Container interno */
 header .header-inner {
-  max-width: 7xl;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 1.5rem 1rem; /* mesmo espaçamento do original */
+  padding: 1.5rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  transition: padding 0.4s ease, gap 0.4s ease;
+  text-align: center;
+  flex-wrap: wrap;
 }
+
 
 /* Estilo do título original */
 header h1 {
@@ -464,9 +466,10 @@ header h1 {
   font-size: 1.875rem;
   font-weight: bold;
   margin: 0;
-  transition: opacity 0.4s ease, max-height 0.4s ease;
-  overflow: hidden;
-  max-height: 60px;
+  padding: 0 1rem;
+  text-align: center;
+  word-break: break-word;
+  transition: opacity 0.4s ease;
 }
 
 header.shrink nav a.button-inscreva {
