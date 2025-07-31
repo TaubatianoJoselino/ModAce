@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrossel Automático</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f8fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .carrossel {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      overflow: hidden;
+      padding: 20px 0;
+    }
+
+    .container-caixas {
+      display: flex;
+      transition: transform 0.4s ease;
+    }
+
+    .caixa {
+      flex: 0 0 80%;
+      max-width: 350px;
+      margin: 0 10px;
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .seta {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #a855f7;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background 0.3s;
+      z-index: 10;
+    }
+
+    .seta:hover {
+      background: #9333ea;
+    }
+
+    .esquerda {
+      left: 10px;
+    }
+    .direita {
+      right: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .caixa {
+        flex: 0 0 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 style="color:#9333ea;">Carrossel com Loop Verdadeiro</h1>
+
+  <div class="carrossel">
+    <button class="seta esquerda">&#9664;</button>
+    
+    <div class="container-caixas">
+      <!-- As caixas originais -->
+      <div class="caixa"><h3>Título 1</h3><p>Texto genérico.</p></div>
+      <div class="caixa"><h3>Título 2</h3><p>Mais texto.</p></div>
+      <div class="caixa"><h3>Título 3</h3><p>Exemplo.</p></div>
+      <div class="caixa"><h3>Título 4</h3><p>Outro conteúdo.</p></div>
+      <div class="caixa"><h3>Título 5</h3><p>Você pode alterar.</p></div>
+      <div class="caixa"><h3>Título 6</h3><p>Última caixa.</p></div>
+    </div>
+    
+    <button class="seta direita">&#9654;</button>
+  </div>
+
+  <script>
+    const container = document.querySelector('.container-caixas');
+    let caixas = Array.from(container.children);
+    const totalOriginal = caixas.length;
+    let index = 1;
+    let largura;
+    let intervalo;
+
+    // Clonar primeiro e último para criar "loop visual"
+    const primeiroClone = caixas[0].cloneNode(true);
+    const ultimoClone = caixas[caixas.length - 1].cloneNode(true);
+    container.appendChild(primeiroClone);
+    container.insertBefore(ultimoClone, caixas[0]);
+    caixas = Array.from(container.children);
+
+    function atualizarLargura() {
+      largura = caixas[0].offsetWidth + 20;
+      container.style.transform = `translateX(-${index * largura}px)`;
+    }
+
+    window.addEventListener('resize', atualizarLargura);
+
+    function moverPara(indice) {
+      container.style.transition = 'transform 0.4s ease';
+      container.style.transform = `translateX(-${indice * largura}px)`;
+      index = indice;
+    }
+
+    function proximo() {
+      moverPara(index + 1);
+    }
+
+    function anterior() {
+      moverPara(index - 1);
+    }
+
+    function loopCorrigir() {
+      if (index === caixas.length - 1) {
+        container.style.transition = 'none';
+        index = 1;
+        container.style.transform = `translateX(-${index * largura}px)`;
+      }
+      if (index === 0) {
+        container.style.transition = 'none';
+        index = caixas.length - 2;
+        container.style.transform = `translateX(-${index * largura}px)`;
+      }
+    }
+
+    container.addEventListener('transitionend', loopCorrigir);
+
+    document.querySelector('.seta.direita').addEventListener('click', () => {
+      proximo();
+      reiniciarIntervalo();
+    });
+
+    document.querySelector('.seta.esquerda').addEventListener('click', () => {
+      anterior();
+      reiniciarIntervalo();
+    });
+
+    function iniciarIntervalo() {
+      intervalo = setInterval(proximo, 2300);
+    }
+
+    function reiniciarIntervalo() {
+      clearInterval(intervalo);
+      iniciarIntervalo();
+    }
+
+    atualizarLargura();
+    iniciarIntervalo();
+  </script>
+</body>
+</html>
